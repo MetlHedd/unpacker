@@ -1,4 +1,3 @@
-#include "fmtswf.hpp"
 #include "unpacker.hpp"
 #include "utils.hpp"
 #include <argparse/argparse.hpp>
@@ -6,7 +5,6 @@
 #include <iostream>
 
 using namespace swf::abc::parser;
-using namespace fmt::literals;
 using namespace athes::unpack;
 namespace arg   = argparse;
 namespace utils = athes::utils;
@@ -63,8 +61,8 @@ int main(int argc, char const* argv[]) {
         logger.log_done(tps, action);
     };
 
-    auto action = fmt::format("{} file", is_url ? "Downloading" : "Reading");
-    logger.info("{} {}. ", action, input);
+    //auto action = fmt::format("{} file", is_url ? "Downloading" : "Reading");
+    logger.info("{} {}. ", input, is_url);
 
     try {
         if (is_url) {
