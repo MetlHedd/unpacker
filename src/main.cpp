@@ -9,7 +9,7 @@ using namespace athes::unpack;
 namespace arg   = argparse;
 namespace utils = athes::utils;
 
-static utils::Logger logger;
+// static utils::Logger logger;
 
 int main(int argc, char const* argv[]) {
     int verbosity = 0;
@@ -38,7 +38,7 @@ int main(int argc, char const* argv[]) {
     try {
         program.parse_args(argc, argv);
     } catch (const std::runtime_error& err) {
-        logger.error("{}\n", err.what(), program.help().str());
+        // logger.error("{}\n", err.what(), program.help().str());
         return 1;
     }
 
@@ -46,7 +46,7 @@ int main(int argc, char const* argv[]) {
                  1  -> info
                  2> -> debug
     */
-    logger.level = utils::LogLevel(std::max(3 - verbosity, 1) * 10);
+    // logger.level = utils::LogLevel(std::max(3 - verbosity, 1) * 10);
 
     const auto input  = program.get("-i");
     const auto output = program.get("output");
@@ -56,13 +56,13 @@ int main(int argc, char const* argv[]) {
     std::unique_ptr<Unpacker> unp;
 
     const auto& timeit = [&](std::string action, void (Unpacker::*func)()) {
-        logger.info("{}. ", action);
+        // logger.info("{}. ", action);
         ((*unp).*func)();
-        logger.log_done(tps, action);
+        // logger.log_done(tps, action);
     };
 
     auto action = fmt::format("{} file", is_url ? "Downloading" : "Reading");
-    logger.info("{} {}. ", input, action);
+    // logger.info("{} {}. ", input, action);
 
     try {
         if (is_url) {
@@ -75,31 +75,31 @@ int main(int argc, char const* argv[]) {
             unp = std::make_unique<Unpacker>(swf::StreamReader::fromfile(input));
         }
     } catch (const std::exception& err) {
-        logger.error("Error: {}\n", err.what());
+        // logger.error("Error: {}\n", err.what());
         return 2;
     }
 
-    logger.log_done(tps, action);
-    logger.info(
-        "File size: {}\n",
-        utils::fmt_unit({ "B", "kB", "MB", "GB" }, static_cast<double>(unp->size())));
+    // logger.log_done(tps, action);
+    //logger.info(
+     //   "File size: {}\n",
+     //   utils::fmt_unit({ "B", "kB", "MB", "GB" }, static_cast<double>(unp->size())));
 
     timeit("Parsing file", &Unpacker::read_movie);
     if (!unp->has_frame1()) {
-        logger.error("Invalid SWF: Frame1 is not available.\n");
+        // logger.error("Invalid SWF: Frame1 is not available.\n");
         return 2;
     }
-    logger.info("Found frame1:\n{}\n", *unp->get_frame1());
+    // logger.info("Found frame1:\n{}\n", *unp->get_frame1());
 
     timeit("Resolving order", &Unpacker::resolve_order);
     if (unp->order.empty()) {
-        logger.error("Unable to resolve binaries order. Is it already unpacked?\n");
+        // logger.error("Unable to resolve binaries order. Is it already unpacked?\n");
         return 2;
     }
     // logger.info("Order: {}\n", fmt::join(unp->order, ", "));
 
     timeit("Resolving binaries", &Unpacker::resolve_binaries);
-    logger.info("Writing to file {} ", output);
+    // logger.info("Writing to file {} ", output);
 
     // Write binaries in the right order to the output file
     std::optional<std::string> missing_binary;
@@ -113,12 +113,12 @@ int main(int argc, char const* argv[]) {
         missing_binary = unp->write_binaries(file);
     }
 
-    logger.log_done(tps, "Writing to file");
+    // logger.log_done(tps, "Writing to file");
     if (missing_binary) {
-        logger.error("Unable to find binary with name: {}", *missing_binary);
+        // logger.error("Unable to find binary with name: {}", *missing_binary);
         return 2;
     }
 
-    logger.display_statistics(tps);
+    // logger.display_statistics(tps);
     return 0;
 }
