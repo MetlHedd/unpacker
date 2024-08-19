@@ -8,11 +8,6 @@
         "argparse",
         "cpr",
         "fmt"
-    ],
-    "overrides": [
-    { 
-        "name": "fmt", 
-        "version": "10.0.0"
-    }
+    ]
   ]
 }
