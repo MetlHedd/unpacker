@@ -98,7 +98,7 @@ int main(int argc, char const* argv[]) {
         logger.error("Unable to resolve binaries order. Is it already unpacked?\n");
         return 2;
     }
-    logger.info("Order: {}\n", fmt::join(unp->order, ", "));
+    // logger.info("Order: {}\n", fmt::join(unp->order, ", "));
 
     timeit("Resolving binaries", &Unpacker::resolve_binaries);
     logger.info("Writing to file {} ", output);
