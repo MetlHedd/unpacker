@@ -61,8 +61,8 @@ int main(int argc, char const* argv[]) {
         logger.log_done(tps, action);
     };
 
-    //auto action = fmt::format("{} file", is_url ? "Downloading" : "Reading");
-    logger.info("{} {}. ", input, is_url);
+    auto action = fmt::format("{} file", is_url ? "Downloading" : "Reading");
+    logger.info("{} {}. ", input, action);
 
     try {
         if (is_url) {
